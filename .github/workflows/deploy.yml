@@ -31,7 +31,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ${{ env.REGISTRY }}/infrasonar/orablezfs-probe
+          images: ${{ env.REGISTRY }}/infrasonar/oraclezfs-probe
 
       - name: Get the version
         id: get_version
@@ -44,5 +44,5 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/infrasonar/orablezfs-probe:${{ steps.get_version.outputs.VERSION }},ghcr.io/infrasonar/orablezfs-probe:unstable
+          tags: ghcr.io/infrasonar/oraclezfs-probe:${{ steps.get_version.outputs.VERSION }},ghcr.io/infrasonar/oraclezfs-probe:unstable
           labels: ${{ steps.meta.outputs.labels }}

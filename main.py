@@ -8,6 +8,6 @@ if __name__ == '__main__':
         'zfs': check_zfs
     }
 
-    probe = Probe("orablezfs", version, checks)
+    probe = Probe("oraclezfs", version, checks)
 
     probe.start()

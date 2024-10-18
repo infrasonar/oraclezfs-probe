@@ -1,5 +1,5 @@
-[![CI](https://github.com/infrasonar/orablezfs-probe/workflows/CI/badge.svg)](https://github.com/infrasonar/orablezfs-probe/actions)
-[![Release Version](https://img.shields.io/github/release/infrasonar/orablezfs-probe)](https://github.com/infrasonar/orablezfs-probe/releases)
+[![CI](https://github.com/infrasonar/oraclezfs-probe/workflows/CI/badge.svg)](https://github.com/infrasonar/oraclezfs-probe/actions)
+[![Release Version](https://img.shields.io/github/release/infrasonar/oraclezfs-probe)](https://github.com/infrasonar/oraclezfs-probe/releases)
 
 # InfraSonar Oracle ZFS Storage Probe
 
@@ -20,7 +20,7 @@ Variable            | Default                        | Description
 ## Docker build
 
 ```
-docker build -t orablezfs-probe . --no-cache
+docker build -t oraclezfs-probe . --no-cache
 ```
 
 ## Config
@@ -37,14 +37,14 @@ snmp:
 ## Dry run
 
 Available checks:
-- `orablezfs`
+- `oraclezfs`
 
 Create a yaml file, for example _(test.yaml)_:
 
 ```yaml
 asset:
   name: "foo.local"
-  check: "orablezfs"
+  check: "oraclezfs"
   config:
     address: "192.168.1.2"
     secure: True
