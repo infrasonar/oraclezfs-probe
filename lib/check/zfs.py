@@ -2,7 +2,6 @@ from libprobe.asset import Asset
 from ..utils import get_token
 
 
-
 async def check_zfs(
         asset: Asset,
         asset_config: dict,

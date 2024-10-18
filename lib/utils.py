@@ -6,7 +6,8 @@ from libprobe.asset import Asset
 DEFAULT_API_VERSION = 'v2'  # v1 or v2
 DEFAULT_SECURE = True
 DEFAULT_PORT = 215
-#MAX_TOKEN_AGE is usually 15 minutes, we choose 12 minutes to be safe
+
+# MAX_TOKEN_AGE is usually 15 minutes, we choose 12 minutes to be safe
 MAX_TOKEN_AGE = 720
 
 # Token registration; Prevent new tokens for each request
