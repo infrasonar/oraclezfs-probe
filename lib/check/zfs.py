@@ -6,7 +6,6 @@ async def check_zfs(
         asset: Asset,
         asset_config: dict,
         check_config: dict) -> dict:
-
     token = await get_token(asset, asset_config, check_config)
 
     ...
