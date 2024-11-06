@@ -7,16 +7,6 @@ async def check_alerts(
         asset: Asset,
         asset_config: dict,
         check_config: dict) -> dict:
-    try:
-        token = await get_token(asset, asset_config, check_config)
-    except Exception:
-        logging.exception('Failed to retrieve token')
-        raise
-
-    try:
-        state = await get_logs_alert(asset, check_config, token)
-    except Exception:
-        logging.exception('Failed to get alerts')
-        raise
-
+    token = await get_token(asset, asset_config, check_config)
+    state = await get_logs_alert(asset, check_config, token)
     return state

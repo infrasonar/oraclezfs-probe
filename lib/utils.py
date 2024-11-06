@@ -51,6 +51,9 @@ async def get_token(
     protocol = 'https' if secure else 'http'
     url = f'{protocol}://{address}:{port}/api/access/{api_version}'
 
+    logging.debug(f'Headers: {headers}')
+    logging.info(f'POST {url}')
+
     async with aiohttp.ClientSession() as session:
         async with session.post(url, headers=headers, ssl=False) as resp:
             assert resp.status // 100 == 2, \
