@@ -37,14 +37,14 @@ snmp:
 ## Dry run
 
 Available checks:
-- `oraclezfs`
+- `alerts`
 
 Create a yaml file, for example _(test.yaml)_:
 
 ```yaml
 asset:
   name: "foo.local"
-  check: "zfs"
+  check: "alerts"
   config:
     address: "192.168.1.2"
     secure: True
