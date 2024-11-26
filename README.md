@@ -38,6 +38,13 @@ snmp:
 
 Available checks:
 - `alerts`
+- `hardware`
+- `network`
+- `problems`
+- `storage`
+- `cpu` _(analytics)_
+- `io` _(analytics)_
+
 
 Create a yaml file, for example _(test.yaml)_:
 

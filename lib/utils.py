@@ -1,16 +1,12 @@
 import aiohttp
 import time
 import logging
-from dateutil import parser
-from datetime import datetime, timedelta
+from typing import Optional
 from libprobe.asset import Asset
-from libprobe.exceptions import IncompleteResultException
 
-
-DEFAULT_API_VERSION = 'v2'  # v1 or v2
-DEFAULT_SECURE = True
-DEFAULT_PORT = 215
-DEFAULT_ALERT_HOURS = 24  # return alers from the past 24 hours
+DEF_API_VERSION = 'v2'  # v1 or v2
+DEF_SECURE = True
+DEF_PORT = 215
 
 # MAX_TOKEN_AGE is usually 15 minutes, we choose 12 minutes to be safe
 MAX_TOKEN_AGE = 720
@@ -34,9 +30,9 @@ async def get_token(
     if not address:
         address = asset.name
 
-    api_version = check_config.get('version', DEFAULT_API_VERSION)
-    secure = check_config.get('secure', DEFAULT_SECURE)
-    port = check_config.get('port', DEFAULT_PORT)
+    api_version = check_config.get('version', DEF_API_VERSION)
+    secure = check_config.get('secure', DEF_SECURE)
+    port = check_config.get('port', DEF_PORT)
 
     try:
         username = asset_config['username']
@@ -51,7 +47,6 @@ async def get_token(
     protocol = 'https' if secure else 'http'
     url = f'{protocol}://{address}:{port}/api/access/{api_version}'
 
-    logging.debug(f'Headers: {headers}')
     logging.info(f'POST {url}')
 
     async with aiohttp.ClientSession() as session:
@@ -67,23 +62,32 @@ async def get_token(
     return token
 
 
-async def get_logs_alert(asset: Asset, check_config: dict, token: str):
+def as_int(d: dict, k: str) -> Optional[int]:
+    x = d.get(k)
+    if x is not None:
+        return int(x)
+
+
+def as_float(d: dict, k: str) -> Optional[float]:
+    x = d.get(k)
+    if x is not None:
+        return float(x)
+
+
+async def get_analytics(asset: Asset, check_config: dict, token: str,
+                        dataset: str) -> dict:
     address = check_config.get('address')
     if not address:
         address = asset.name
     headers = {'X-Auth-Session': token}
-    api_version = check_config.get('version', DEFAULT_API_VERSION)
-    secure = check_config.get('secure', DEFAULT_SECURE)
-    port = check_config.get('port', DEFAULT_PORT)
-    alert_hours = check_config.get('hours', DEFAULT_ALERT_HOURS)
-
-    start = (datetime.utcnow() - timedelta(hours=alert_hours))
-    index = start.isoformat(sep='T', timespec='seconds') + 'Z'
+    api_version = check_config.get('version', DEF_API_VERSION)
+    secure = check_config.get('secure', DEF_SECURE)
+    port = check_config.get('port', DEF_PORT)
 
     protocol = 'https' if secure else 'http'
     url = (
         f'{protocol}://{address}:{port}'
-        f'/api/log/{api_version}/logs/alert?start={index}'
+        f'/api/analytics/{api_version}/datasets/{dataset}/data?span=minute'
     )
 
     logging.info(f'GET {url}')
@@ -94,30 +98,4 @@ async def get_logs_alert(asset: Asset, check_config: dict, token: str):
                 f'response status code: {resp.status}. reason: {resp.reason}.'
             data = await resp.json()
 
-    uuids = set()  # TODO: remove if 100% sure uuids are unique
-    logs = []
-    state = {}
-
-    if data:
-        for log in data['logs']:
-            log['timestamp'] = int(parser.parse(log['timestamp']).timestamp())
-            uuid = log.pop('uuid')
-            log['name'] = uuid
-            if uuid in uuids:
-                logging.error('UUID not unique')
-            else:
-                logs.append(log)
-            uuids.add(uuid)
-
-    state['logs'] = logs
-    state['records'] = [{
-        'name': 'count',
-        'count': len(logs),
-        'since': int(start.timestamp()),
-        'hours': alert_hours,
-    }]
-
-    if len(logs) != len(uuids):
-        raise IncompleteResultException('UUIDs are not unique', result=state)
-
-    return state
+    return data
