@@ -17,6 +17,7 @@ MAX_TOKEN_AGE = 720
 _tokens: dict[int, tuple[float, str]] = dict()
 _locks: dict[int, asyncio.Lock] = defaultdict(asyncio.Lock)
 
+
 async def get_token(
         asset: Asset,
         asset_config: dict,
