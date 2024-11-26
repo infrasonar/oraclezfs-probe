@@ -38,12 +38,12 @@ async def get_luns(asset: Asset, check_config: dict, token: str):
             'sparse': lun['sparse'],  # bool
             'volsize': int(lun['volsize']),  # int
             'volblocksize': int(lun['volblocksize']),  # int
-            'usage_available': as_int(usage, 'available'),  # int
-            'usage_total': as_int(usage, 'total'),  # int
-            'usage_data': as_int(usage, 'data'),  # int
-            'usage_compressratio': as_float(usage, 'compressratio'),  # float
-            'usage_snapshots': as_float(usage, 'snapshots'),  # float
-            'usage_loading': usage.get('loading'),  # bool
+            'usage_available': as_int(usage, 'available'),  # int?
+            'usage_total': as_int(usage, 'total'),  # int?
+            'usage_data': as_int(usage, 'data'),  # int?
+            'usage_compressratio': as_float(usage, 'compressratio'),  # float?
+            'usage_snapshots': as_float(usage, 'snapshots'),  # float?
+            'usage_loading': usage.get('loading'),  # bool?
             'status': lun.get('status'),  # str
             'stmfguid': stmfguid,  # str
         })
