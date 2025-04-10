@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from libprobe.asset import Asset
 from libprobe.exceptions import IncompleteResultException
 from ..utils import get_token, DEF_API_VERSION, DEF_SECURE, DEF_PORT
+from ..connector import get_connector
 
 
 DEF_ALERT_HOURS = 24  # return alers from the past 24 hours
@@ -31,7 +32,7 @@ async def get_logs_alert(asset: Asset, check_config: dict, token: str):
 
     logging.info(f'GET {url}')
 
-    async with aiohttp.ClientSession() as session:
+    async with aiohttp.ClientSession(connector=get_connector()) as session:
         async with session.get(url, headers=headers, ssl=False) as resp:
             assert resp.status // 100 == 2, \
                 f'response status code: {resp.status}. reason: {resp.reason}.'

@@ -5,6 +5,7 @@ import logging
 from typing import Optional
 from collections import defaultdict
 from libprobe.asset import Asset
+from .connector import get_connector
 
 DEF_API_VERSION = 'v2'  # v1 or v2
 DEF_SECURE = True
@@ -53,7 +54,7 @@ async def get_token(
 
         logging.info(f'POST {url}')
 
-        async with aiohttp.ClientSession() as session:
+        async with aiohttp.ClientSession(connector=get_connector()) as session:
             async with session.post(url, headers=headers, ssl=False) as resp:
                 assert resp.status // 100 == 2, \
                     f'response status code: {resp.status}. ' \
@@ -97,7 +98,7 @@ async def get_analytics(asset: Asset, check_config: dict, token: str,
 
     logging.info(f'GET {url}')
 
-    async with aiohttp.ClientSession() as session:
+    async with aiohttp.ClientSession(connector=get_connector()) as session:
         async with session.get(url, headers=headers, ssl=False) as resp:
             assert resp.status // 100 == 2, \
                 f'response status code: {resp.status}. reason: {resp.reason}.'
