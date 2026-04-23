@@ -12,15 +12,15 @@ from ..connector import get_connector
 DEF_ALERT_HOURS = 24  # return alers from the past 24 hours
 
 
-async def get_logs_alert(asset: Asset, check_config: dict, token: str):
-    address = check_config.get('address')
+async def get_logs_alert(asset: Asset, config: dict, token: str):
+    address = config.get('address')
     if not address:
         address = asset.name
     headers = {'X-Auth-Session': token}
-    api_version = check_config.get('version', DEF_API_VERSION)
-    secure = check_config.get('secure', DEF_SECURE)
-    port = check_config.get('port', DEF_PORT)
-    alert_hours = check_config.get('hours', DEF_ALERT_HOURS)
+    api_version = config.get('version', DEF_API_VERSION)
+    secure = config.get('secure', DEF_SECURE)
+    port = config.get('port', DEF_PORT)
+    alert_hours = config.get('hours', DEF_ALERT_HOURS)
 
     start = (datetime.utcnow() - timedelta(hours=alert_hours))
     index = start.isoformat(sep='T', timespec='seconds') + 'Z'

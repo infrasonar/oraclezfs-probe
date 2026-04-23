@@ -12,14 +12,14 @@ def dt(date_string: str | None) -> int | None:
         int(datetime.datetime.fromisoformat(date_string).timestamp())
 
 
-async def get_version(asset: Asset, check_config: dict, token: str):
-    address = check_config.get('address')
+async def get_version(asset: Asset, config: dict, token: str):
+    address = config.get('address')
     if not address:
         address = asset.name
     headers = {'X-Auth-Session': token}
-    api_version = check_config.get('version', DEF_API_VERSION)
-    secure = check_config.get('secure', DEF_SECURE)
-    port = check_config.get('port', DEF_PORT)
+    api_version = config.get('version', DEF_API_VERSION)
+    secure = config.get('secure', DEF_SECURE)
+    port = config.get('port', DEF_PORT)
 
     protocol = 'https' if secure else 'http'
 

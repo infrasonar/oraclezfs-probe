@@ -21,7 +21,7 @@ _locks: dict[int, asyncio.Lock] = defaultdict(asyncio.Lock)
 async def get_token(
         asset: Asset,
         local_config: dict,
-        check_config: dict) -> str:
+        config: dict) -> str:
     async with _locks[asset.id]:
         token_reg = _tokens.get(asset.id)
         if token_reg is not None:
@@ -29,13 +29,13 @@ async def get_token(
             if ts + MAX_TOKEN_AGE > time.time():
                 return token
 
-        address = check_config.get('address')
+        address = config.get('address')
         if not address:
             address = asset.name
 
-        api_version = check_config.get('version', DEF_API_VERSION)
-        secure = check_config.get('secure', DEF_SECURE)
-        port = check_config.get('port', DEF_PORT)
+        api_version = config.get('version', DEF_API_VERSION)
+        secure = config.get('secure', DEF_SECURE)
+        port = config.get('port', DEF_PORT)
 
         try:
             username = local_config['username']
@@ -79,15 +79,15 @@ def as_float(d: dict, k: str) -> float | None:
         return float(x)
 
 
-async def get_analytics(asset: Asset, check_config: dict, token: str,
+async def get_analytics(asset: Asset, config: dict, token: str,
                         dataset: str) -> dict:
-    address = check_config.get('address')
+    address = config.get('address')
     if not address:
         address = asset.name
     headers = {'X-Auth-Session': token}
-    api_version = check_config.get('version', DEF_API_VERSION)
-    secure = check_config.get('secure', DEF_SECURE)
-    port = check_config.get('port', DEF_PORT)
+    api_version = config.get('version', DEF_API_VERSION)
+    secure = config.get('secure', DEF_SECURE)
+    port = config.get('port', DEF_PORT)
 
     protocol = 'https' if secure else 'http'
     url = (

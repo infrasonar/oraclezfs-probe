@@ -4,9 +4,9 @@ from libprobe.check import Check
 from ..utils import get_token, get_analytics
 
 
-async def get_cpu_analytics(asset: Asset, check_config: dict, token: str):
+async def get_cpu_analytics(asset: Asset, config: dict, token: str):
     dataset = 'cpu.utilization'
-    data = await get_analytics(asset, check_config, token, dataset)
+    data = await get_analytics(asset, config, token, dataset)
 
     # this already should be an integer, just to be sure
     cpu_percent = int(data['data']['data']['value'])

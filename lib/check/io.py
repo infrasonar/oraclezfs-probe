@@ -4,10 +4,10 @@ from libprobe.check import Check
 from ..utils import get_token, get_analytics
 
 
-async def get_io_analytics(asset: Asset, check_config: dict, token: str):
+async def get_io_analytics(asset: Asset, config: dict, token: str):
     # I/O operations per second broken down by disk
     dataset = 'io.ops[disk]'
-    data = await get_analytics(asset, check_config, token, dataset)
+    data = await get_analytics(asset, config, token, dataset)
 
     data = data['data']['data']
     ops_disk = []
@@ -20,7 +20,7 @@ async def get_io_analytics(asset: Asset, check_config: dict, token: str):
 
     # I/O operations per second broken down by type of operation
     dataset = 'io.ops[op]'
-    data = await get_analytics(asset, check_config, token, dataset)
+    data = await get_analytics(asset, config, token, dataset)
 
     data = data['data']['data']
     read, write = 0, 0
