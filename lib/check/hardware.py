@@ -1,6 +1,7 @@
 import logging
 import aiohttp
 from libprobe.asset import Asset
+from libprobe.check import Check
 from ..utils import get_token, DEF_API_VERSION, DEF_SECURE, DEF_PORT
 from ..connector import get_connector
 
@@ -55,10 +56,13 @@ async def get_hardware(asset: Asset, check_config: dict, token: str):
     return {'chassis': chassis}
 
 
-async def check_hardware(
-        asset: Asset,
-        asset_config: dict,
-        check_config: dict) -> dict:
-    token = await get_token(asset, asset_config, check_config)
-    state = await get_hardware(asset, check_config, token)
-    return state
+class CheckHardware(Check):
+    key = 'hardware'
+    unchanged_eol = 0
+
+    @staticmethod
+    async def run(asset: Asset, local_config: dict, config: dict) -> dict:
+
+        token = await get_token(asset, local_config, config)
+        state = await get_hardware(asset, config, token)
+        return state

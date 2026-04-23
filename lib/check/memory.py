@@ -1,6 +1,7 @@
 import logging
 import aiohttp
 from libprobe.asset import Asset
+from libprobe.check import Check
 from ..utils import get_token, DEF_API_VERSION, DEF_SECURE, DEF_PORT
 from ..connector import get_connector
 
@@ -41,10 +42,13 @@ async def get_memory(asset: Asset, check_config: dict, token: str):
     return {'memory': [item]}
 
 
-async def check_memory(
-        asset: Asset,
-        asset_config: dict,
-        check_config: dict) -> dict:
-    token = await get_token(asset, asset_config, check_config)
-    state = await get_memory(asset, check_config, token)
-    return state
+class CheckMemory(Check):
+    key = 'memory'
+    unchanged_eol = 0
+
+    @staticmethod
+    async def run(asset: Asset, local_config: dict, config: dict) -> dict:
+
+        token = await get_token(asset, local_config, config)
+        state = await get_memory(asset, config, token)
+        return state

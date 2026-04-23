@@ -1,5 +1,6 @@
 import logging
 from libprobe.asset import Asset
+from libprobe.check import Check
 from ..utils import get_token, get_analytics
 
 
@@ -46,10 +47,13 @@ async def get_io_analytics(asset: Asset, check_config: dict, token: str):
     return state
 
 
-async def check_io(
-        asset: Asset,
-        asset_config: dict,
-        check_config: dict) -> dict:
-    token = await get_token(asset, asset_config, check_config)
-    state = await get_io_analytics(asset, check_config, token)
-    return state
+class CheckIo(Check):
+    key = 'io'
+    unchanged_eol = 0
+
+    @staticmethod
+    async def run(asset: Asset, local_config: dict, config: dict) -> dict:
+
+        token = await get_token(asset, local_config, config)
+        state = await get_io_analytics(asset, config, token)
+        return state
