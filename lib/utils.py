@@ -2,7 +2,6 @@ import asyncio
 import aiohttp
 import time
 import logging
-from typing import Optional
 from collections import defaultdict
 from libprobe.asset import Asset
 from .connector import get_connector
@@ -68,13 +67,13 @@ async def get_token(
         return token
 
 
-def as_int(d: dict, k: str) -> Optional[int]:
+def as_int(d: dict, k: str) -> int | None:
     x = d.get(k)
     if x is not None:
         return int(x)
 
 
-def as_float(d: dict, k: str) -> Optional[float]:
+def as_float(d: dict, k: str) -> float | None:
     x = d.get(k)
     if x is not None:
         return float(x)
