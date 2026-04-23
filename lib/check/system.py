@@ -1,13 +1,12 @@
 import logging
 import aiohttp
 import datetime
-from typing import Optional
 from libprobe.asset import Asset
 from ..utils import get_token, DEF_API_VERSION, DEF_SECURE, DEF_PORT
 from ..connector import get_connector
 
 
-def dt(date_string: Optional[str]) -> Optional[int]:
+def dt(date_string: str | None) -> int | None:
     return None if date_string is None else \
         int(datetime.datetime.fromisoformat(date_string).timestamp())
 
