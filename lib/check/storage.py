@@ -56,7 +56,7 @@ async def get_luns(asset: Asset, check_config: dict, token: str):
 
 class CheckStorage(Check):
     key = 'storage'
-    unchanged_eol = 0
+    unchanged_eol = 14400
 
     @staticmethod
     async def run(asset: Asset, local_config: dict, config: dict) -> dict:

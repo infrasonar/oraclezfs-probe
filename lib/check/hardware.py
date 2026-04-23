@@ -58,7 +58,7 @@ async def get_hardware(asset: Asset, check_config: dict, token: str):
 
 class CheckHardware(Check):
     key = 'hardware'
-    unchanged_eol = 0
+    unchanged_eol = 14400
 
     @staticmethod
     async def run(asset: Asset, local_config: dict, config: dict) -> dict:
