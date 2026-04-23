@@ -20,7 +20,7 @@ _locks: dict[int, asyncio.Lock] = defaultdict(asyncio.Lock)
 
 async def get_token(
         asset: Asset,
-        asset_config: dict,
+        local_config: dict,
         check_config: dict) -> str:
     async with _locks[asset.id]:
         token_reg = _tokens.get(asset.id)
@@ -38,8 +38,8 @@ async def get_token(
         port = check_config.get('port', DEF_PORT)
 
         try:
-            username = asset_config['username']
-            password = asset_config['password']
+            username = local_config['username']
+            password = local_config['password']
         except KeyError:
             raise Exception(
                 'missing username or password in local asset config')
