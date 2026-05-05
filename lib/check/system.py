@@ -1,25 +1,25 @@
 import logging
 import aiohttp
 import datetime
-from typing import Optional
 from libprobe.asset import Asset
+from libprobe.check import Check
 from ..utils import get_token, DEF_API_VERSION, DEF_SECURE, DEF_PORT
 from ..connector import get_connector
 
 
-def dt(date_string: Optional[str]) -> Optional[int]:
+def dt(date_string: str | None) -> int | None:
     return None if date_string is None else \
         int(datetime.datetime.fromisoformat(date_string).timestamp())
 
 
-async def get_version(asset: Asset, check_config: dict, token: str):
-    address = check_config.get('address')
+async def get_version(asset: Asset, config: dict, token: str):
+    address = config.get('address')
     if not address:
         address = asset.name
     headers = {'X-Auth-Session': token}
-    api_version = check_config.get('version', DEF_API_VERSION)
-    secure = check_config.get('secure', DEF_SECURE)
-    port = check_config.get('port', DEF_PORT)
+    api_version = config.get('version', DEF_API_VERSION)
+    secure = config.get('secure', DEF_SECURE)
+    port = config.get('port', DEF_PORT)
 
     protocol = 'https' if secure else 'http'
 
@@ -64,10 +64,13 @@ async def get_version(asset: Asset, check_config: dict, token: str):
     return {'version': [item]}
 
 
-async def check_system(
-        asset: Asset,
-        asset_config: dict,
-        check_config: dict) -> dict:
-    token = await get_token(asset, asset_config, check_config)
-    state = await get_version(asset, check_config, token)
-    return state
+class CheckSystem(Check):
+    key = 'system'
+    unchanged_eol = 0
+
+    @staticmethod
+    async def run(asset: Asset, local_config: dict, config: dict) -> dict:
+
+        token = await get_token(asset, local_config, config)
+        state = await get_version(asset, config, token)
+        return state

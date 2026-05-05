@@ -1,19 +1,20 @@
 import logging
 import aiohttp
 from libprobe.asset import Asset
+from libprobe.check import Check
 from ..utils import get_token, DEF_API_VERSION, DEF_SECURE, DEF_PORT
 from ..connector import get_connector
 
 
-async def get_network(asset: Asset, check_config: dict, token: str):
+async def get_network(asset: Asset, config: dict, token: str):
     state = {}
-    address = check_config.get('address')
+    address = config.get('address')
     if not address:
         address = asset.name
     headers = {'X-Auth-Session': token}
-    api_version = check_config.get('version', DEF_API_VERSION)
-    secure = check_config.get('secure', DEF_SECURE)
-    port = check_config.get('port', DEF_PORT)
+    api_version = config.get('version', DEF_API_VERSION)
+    secure = config.get('secure', DEF_SECURE)
+    port = config.get('port', DEF_PORT)
 
     protocol = 'https' if secure else 'http'
 
@@ -111,10 +112,13 @@ async def get_network(asset: Asset, check_config: dict, token: str):
     return state
 
 
-async def check_network(
-        asset: Asset,
-        asset_config: dict,
-        check_config: dict) -> dict:
-    token = await get_token(asset, asset_config, check_config)
-    state = await get_network(asset, check_config, token)
-    return state
+class CheckNetwork(Check):
+    key = 'network'
+    unchanged_eol = 14400
+
+    @staticmethod
+    async def run(asset: Asset, local_config: dict, config: dict) -> dict:
+
+        token = await get_token(asset, local_config, config)
+        state = await get_network(asset, config, token)
+        return state

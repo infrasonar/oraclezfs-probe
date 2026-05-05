@@ -2,7 +2,6 @@ import asyncio
 import aiohttp
 import time
 import logging
-from typing import Optional
 from collections import defaultdict
 from libprobe.asset import Asset
 from .connector import get_connector
@@ -21,8 +20,8 @@ _locks: dict[int, asyncio.Lock] = defaultdict(asyncio.Lock)
 
 async def get_token(
         asset: Asset,
-        asset_config: dict,
-        check_config: dict) -> str:
+        local_config: dict,
+        config: dict) -> str:
     async with _locks[asset.id]:
         token_reg = _tokens.get(asset.id)
         if token_reg is not None:
@@ -30,17 +29,17 @@ async def get_token(
             if ts + MAX_TOKEN_AGE > time.time():
                 return token
 
-        address = check_config.get('address')
+        address = config.get('address')
         if not address:
             address = asset.name
 
-        api_version = check_config.get('version', DEF_API_VERSION)
-        secure = check_config.get('secure', DEF_SECURE)
-        port = check_config.get('port', DEF_PORT)
+        api_version = config.get('version', DEF_API_VERSION)
+        secure = config.get('secure', DEF_SECURE)
+        port = config.get('port', DEF_PORT)
 
         try:
-            username = asset_config['username']
-            password = asset_config['password']
+            username = local_config['username']
+            password = local_config['password']
         except KeyError:
             raise Exception(
                 'missing username or password in local asset config')
@@ -68,27 +67,27 @@ async def get_token(
         return token
 
 
-def as_int(d: dict, k: str) -> Optional[int]:
+def as_int(d: dict, k: str) -> int | None:
     x = d.get(k)
     if x is not None:
         return int(x)
 
 
-def as_float(d: dict, k: str) -> Optional[float]:
+def as_float(d: dict, k: str) -> float | None:
     x = d.get(k)
     if x is not None:
         return float(x)
 
 
-async def get_analytics(asset: Asset, check_config: dict, token: str,
+async def get_analytics(asset: Asset, config: dict, token: str,
                         dataset: str) -> dict:
-    address = check_config.get('address')
+    address = config.get('address')
     if not address:
         address = asset.name
     headers = {'X-Auth-Session': token}
-    api_version = check_config.get('version', DEF_API_VERSION)
-    secure = check_config.get('secure', DEF_SECURE)
-    port = check_config.get('port', DEF_PORT)
+    api_version = config.get('version', DEF_API_VERSION)
+    secure = config.get('secure', DEF_SECURE)
+    port = config.get('port', DEF_PORT)
 
     protocol = 'https' if secure else 'http'
     url = (
